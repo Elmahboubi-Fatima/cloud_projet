@@ -67,5 +67,31 @@ router.delete('/delete/:id',knockknock, whosthere(["admin"]), async (req, res) =
       res.status(500).json({ error: 'Server error' })
     }
 })
+
+router.get("/search", async (req, res) => {
+  const { filter, value } = req.query; 
+  if (!['name', 'email', 'role'].includes(filter)) {
+    return res.status(400).json({ message: "Invalid search parameter"});
+  }
+  if (!value) {
+    return res.status(400).json({ message: "Please fill the search value" });
+  }
+  let query = {}
+  switch (filter) {
+    case "name":
+      query = { name: { $regex: value, $options: "i" } }
+      break
+    case "email":
+      query = { email: { $regex: value, $options: "i" } }
+      break
+    case "role": query = { role: { $regex: value, $options: "i" } }
+      return res.status(400).json({ message: "Invalid filter type" })
+  }
+  const users = await User.find(query).select('-password')
+  if (users.length == 0) {
+    return res.status(404).json({ message: "No users found" })
+  }
+  res.json(users);
+});
   
-  module.exports = router
+module.exports = router
