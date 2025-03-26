@@ -1,0 +1,6 @@
+#knockknock: typical token verification middleware
+
+#whosthere: access permission middleware
+example: 
+router.add('/delete/:id',knockknock, whosthere(["admin","member"]),(req,res...
+router.delete('/delete/:id',knockknock, whosthere(["admin"]),(req,res...

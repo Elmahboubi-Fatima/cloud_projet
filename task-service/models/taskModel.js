@@ -7,12 +7,12 @@ const taskSchema = new mongoose.Schema({
   priorite: { type: String, required: true },
   status: {
     type: String,
-    enum: ["todo", "in-progress", "done"],
+    enum: ["a faire,", "en cours", "termine"],
     default: "todo",
   },
   deadline: { type: String, required: true },
   comment: [{ type: String, ref: "comment" }],
-  userTask: { type: mongoose.Schema.Types.ObjectId, ref: "User" },
+  userTask: { type: String, ref: "User" },
 });
 
 module.exports = mongoose.model("task", taskSchema);
