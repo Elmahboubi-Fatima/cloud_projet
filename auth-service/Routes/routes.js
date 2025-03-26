@@ -85,7 +85,7 @@ router.get("/search", async (req, res) => {
       query = { email: { $regex: value, $options: "i" } }
       break
     case "role": query = { role: { $regex: value, $options: "i" } }
-      return res.status(400).json({ message: "Invalid filter type" })
+      break
   }
   const users = await User.find(query).select('-password')
   if (users.length == 0) {
