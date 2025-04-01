@@ -56,27 +56,7 @@ router.put("/update/:id", knockknock, async (req, res) => {
   }
 });
 
-router.delete(
-  "/delete/:id",
-  knockknock,
-  whosthere(["admin"]),
-  async (req, res) => {
-    try {
-      const user = await User.findById(req.params.id);
-      if (!user) return res.status(404).json({ error: "User not found" });
-
-      await User.findByIdAndDelete(req.params.id);
-      res.json({ message: "User deleted successfully" });
-    } catch (error) {
-      res.status(500).json({ error: "Server error" });
-    }
-  }
-);
-
-router.delete(
-  "/delete/:id",
-  knockknock,
-  whosthere(["admin"]),
+router.delete("/delete/:id", knockknock, whosthere(["admin"]),
   async (req, res) => {
     try {
       const user = await User.findById(req.params.id);
@@ -104,11 +84,10 @@ router.get("/search", async (req, res) => {
       query = { name: { $regex: value, $options: "i" } };
       break;
     case "email":
-      query = { email: { $regex: value, $options: "i" } };
-      break;
-    case "role":
-      query = { role: { $regex: value, $options: "i" } };
-      return res.status(400).json({ message: "Invalid filter type" });
+      query = { email: { $regex: value, $options: "i" } }
+      break
+    case "role": query = { role: { $regex: value, $options: "i" } }
+      break
   }
   const users = await User.find(query).select("-password");
   if (users.length == 0) {
