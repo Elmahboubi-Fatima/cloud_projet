@@ -12,7 +12,7 @@ const taskSchema = new mongoose.Schema({
   },
   deadline: { type: String, required: true },
   comment: [{ type: String, ref: "comment" }],
-  userTask: { type: String, ref: "User" },
+  assignment: { type: String, ref: "User" },
 });
 
 module.exports = mongoose.model("task", taskSchema);

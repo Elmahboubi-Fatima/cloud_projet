@@ -6,7 +6,7 @@ const Comment = require("../models/commentModel");
 const whosthere = require("../Middlewares/whosthere");
 const knockknock = require("../Middlewares/knockknock");
 
-router.get("/all", knockknock, async (req, res) => {
+router.get("/all", async (req, res) => {
   try {
     const task = await Task.find();
     res.status(200).json({ task });
@@ -63,18 +63,18 @@ router.delete(
 );
 
 router.post(
-  "/assign/:task_id/:user_id",
+  "/assign/:task_id/:user_email",
   knockknock,
   whosthere(["admin", "member"]),
   async (req, res) => {
     try {
-      const { task_id, user_id } = req.params;
+      const { task_id, user_email } = req.params;
       const task = await Task.findById(task_id);
       if (!task) {
         return res.status(404).json({ message: "Task not found" });
       }
 
-      task.userTask = user_id;
+      task.assignment = user_email;
       await task.save();
 
       res.json({ message: "Task assigned successfully", task });
