@@ -10,10 +10,7 @@ app.use(express.json());
 const port = process.env.PORT || 3002;
 
 mongoose
-  .connect(`${process.env.URL_MONGOOSE}/${process.env.DBNAME}`, {
-    useNewUrlParser: true,
-    useUnifiedTopology: true,
-  })
+  .connect(`${process.env.URL_MONGOOSE}/${process.env.DBNAME}`)
   .then(() => {
     console.log("connection successful");
   })

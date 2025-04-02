@@ -42,8 +42,8 @@ router.post("/login", async (req, res) => {
 })
 
 router.put("/update", knockknock, async (req, res) => {
-  const { name, password } = req.body
-  const userId = req.user.id
+  const { name, password } = req.body;
+  const userId = req.user.id;
 
   try {
     const user = await User.findById(userId) 
@@ -52,7 +52,7 @@ router.put("/update", knockknock, async (req, res) => {
       name: name,
       password: password ? await bcrypt.hash(password, 10) : user.password
     })
-    res.json({ message: "Your informations have been updated" })
+    res.json({ message: "Your informations have been updated"})
   } catch (error) {
     res.status(500).json({ error: "Server error" })
   }
