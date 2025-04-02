@@ -1,3 +1,5 @@
+//Session verification middleware, takes in the token, and sends over the user's id and their role
+
 const jwt = require("jsonwebtoken");
 const dotenv = require('dotenv')
 dotenv.config() 

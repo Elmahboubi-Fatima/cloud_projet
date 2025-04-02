@@ -8,6 +8,8 @@ dotenv.config()
 const whosthere = require("../Middlewares/whosthere")
 const knockknock = require("../Middlewares/knockknock")
 
+
+//Typical registration with instance checking and password hashing
 router.post("/register", async (req, res) => {
   const { email, name, role, password } = req.body
   if (!email || !name || !role || !password) {
@@ -27,6 +29,7 @@ router.post("/register", async (req, res) => {
   }
 }) 
 
+//Login route checks the existence, compares password, and signs a jwt carrying the user's id and role
 router.post("/login", async (req, res) => {
   const { email, password } = req.body
   const user = await User.findOne({ email })
@@ -41,9 +44,10 @@ router.post("/login", async (req, res) => {
   res.json({ token })
 })
 
+//Update route that allows the connected user to change their Name and password
 router.put("/update", knockknock, async (req, res) => {
-  const { name, password } = req.body
-  const userId = req.user.id
+  const { name, password } = req.body;
+  const userId = req.user.id;
 
   try {
     const user = await User.findById(userId) 
@@ -52,7 +56,7 @@ router.put("/update", knockknock, async (req, res) => {
       name: name,
       password: password ? await bcrypt.hash(password, 10) : user.password
     })
-    res.json({ message: "Your informations have been updated" })
+    res.json({ message: "Your informations have been updated"})
   } catch (error) {
     res.status(500).json({ error: "Server error" })
   }
@@ -60,7 +64,7 @@ router.put("/update", knockknock, async (req, res) => {
 
 
 
-
+//A route allowing admins to delete users by id
 router.delete("/delete/:id", knockknock, whosthere(["admin"]),
   async (req, res) => {
     try {
@@ -75,6 +79,7 @@ router.delete("/delete/:id", knockknock, whosthere(["admin"]),
   }
 ) 
 
+//Search feature that lists users depending on the search filter and value
 router.get("/search", async (req, res) => {
   const { filter, value } = req.query
   if (!["name", "email", "role"].includes(filter)) {
