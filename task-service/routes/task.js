@@ -69,6 +69,17 @@ router.post(
   async (req, res) => {
     try {
       const { task_id, user_email } = req.params;
+
+      const authHeader = req.headers.authorization;
+
+      const authSearch = `http://localhost:3000/auth-service/search?filter=email&value=${user_email}`;
+      const response = await axios.get(authSearch, {
+        headers: { Authorization: authHeader },
+      });
+
+      const user = response.data;
+      if (!user) return res.status(404).json({ message: "User not found" });
+
       const task = await Task.findById(task_id);
       if (!task) {
         return res.status(404).json({ message: "Task not found" });
