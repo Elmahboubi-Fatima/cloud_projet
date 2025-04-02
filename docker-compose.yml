@@ -1,0 +1,77 @@
+version: '3.8'
+
+services:
+  mongo:
+    image: mongo:latest
+    container_name: mongo_db
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongo_data:/data/db
+
+
+
+  auth-service:
+    build: ./auth-service
+    container_name: auth-service
+    ports:
+      - "3000:3000"
+    environment:
+      - PORT=3000
+      - MONGO_URI=mongodb://mongo:27017/cloud
+      - JWT_SECRET=secret
+    depends_on:
+      - mongo
+
+
+
+  project-service:
+    build: ./projet-service
+    container_name: projet-service
+    ports:
+      - "3001:3001"
+    environment:
+      - MONGODB_URI=mongodb://mongo:27017/projectDB
+      - HOST=localhost
+      - PORT=3001
+      - JWT_SECRET=testing
+    depends_on:
+      - mongo
+      - auth-service
+
+
+
+  task-service:
+    build: ./task-service
+    container_name: task-service
+    ports:
+      - "3002:3002"
+    environment:
+      - PORT=3002
+      - URL_MONGOOSE=mongodb://mongo:27017
+      - DBNAME=task-service
+      - JWT_SECRET=its_a_secret
+    depends_on:
+      - mongo
+      - auth-service
+      - project-service
+      - collaboration-service 
+
+
+
+  collaboration-service:
+    build: ./collaboration-service
+    container_name: collaboration-service
+    ports:
+      - "3003:3003"
+    environment:
+      - DB_URI=mongodb://mongo:27017/ChatDB
+      - PORT=3003
+      - JWT_SECRET=its_a_secret
+    depends_on:
+      - mongo
+      - auth-service
+
+
+volumes:
+  mongo_data:

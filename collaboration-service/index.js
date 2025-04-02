@@ -1,6 +1,6 @@
 const express = require('express');
 const cors = require('cors');
-const knockknock = require("./Middlewares/knockknock");
+const knockknock = require("./middlewares/knockknock");
 
 const http = require('http');
 const { Server } = require('socket.io');
