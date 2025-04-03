@@ -22,8 +22,8 @@ router.post("/register", async (req, res) => {
   const hpw = await bcrypt.hash(password, 10)
   const _id = role + "_" + email
   try {
-    await User.create({ _id, email, name, password: hpw, role })
-    res.status(201).json({ message: "User created successfully" })
+    const addeduser = await User.create({ _id, email, name, password: hpw, role })
+    res.status(201).json({ message: "User created successfully" ,addeduser: addeduser})
   } catch (err) {
     res.status(501).json(err)
   }
@@ -41,7 +41,7 @@ router.post("/login", async (req, res) => {
     return res.status(400).json({ message: "Invalid Credentials" })
   }
   const token = jwt.sign({ id: user._id, role: user.role }, process.env.JWT_SECRET)
-  res.json({ token })
+  res.json({ token: token , user : user})
 })
 
 //Update route that allows the connected user to change their Name and password
@@ -52,11 +52,11 @@ router.put("/update", knockknock, async (req, res) => {
   try {
     const user = await User.findById(userId) 
     if (!user) return res.status(404).json({ error: "User not found" })
-    await User.findByIdAndUpdate(userId, {
-      name: name,
+    const updatedUser = await User.findByIdAndUpdate(userId, {
+      name: name ? name : user.name,
       password: password ? await bcrypt.hash(password, 10) : user.password
     })
-    res.json({ message: "Your informations have been updated"})
+    res.json({ message: "Your informations have been updated", updateduser: updatedUser})
   } catch (error) {
     res.status(500).json({ error: "Server error" })
   }
